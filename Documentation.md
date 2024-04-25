@@ -56,11 +56,11 @@ associated with the correct environment and Python version.
 When working with PyTorch, you may encounter your code taking longer than
 you would expect it to take. Verify you are **setting the device**. PyTorch
 supports the use of both CPUs and GPUs, and runs on the CPU by default.
-To switch to the GPU, set the device to "cuda" for both the model and the
-data, eg:
+To switch to the GPU, set the device to "cuda" for **both the model and the
+data**, eg:
 ```python
-model = model.to(device)
-data = data.to(device)
+model = model.to("cuda")
+data = data.to("cuda")
 ```
 #### Excess RAM usage on Colab
 Sometimes when using PyTorch on Colab, you may encounter memory issues with
