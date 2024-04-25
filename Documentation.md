@@ -21,7 +21,13 @@ Creating a virtual environment with venv also generates a PowerShell script
 and a bat script, which can be used to activate the environment in Windows
 based systems.
 
-It is also possible to use a virtual environment on Google Colab.
+It is also possible to use a virtual environment on Google Colab. In most
+use cases, this will be unnecessary. However, if you are using deep 
+learning for some specific use cases, such as reinforcement learning,
+which frequently involve installing other packages, such as gymnasium or 
+mujoco, a virtual environment can be helpful, as such packages involve
+complex dependencies that pip cannot automatically resolve, making 
+recreation extremely challenging.
 
 ### Debugging
 #### Dependencies and Versions
@@ -58,13 +64,15 @@ you would expect it to take. Verify you are **setting the device**. PyTorch
 supports the use of both CPUs and GPUs, and runs on the CPU by default.
 To switch to the GPU, set the device to "cuda" for **both the model and the
 data**, eg:
+
 ```python
 model = model.to("cuda")
 data = data.to("cuda")
 ```
+
 #### Excess RAM usage on Colab
 Sometimes when using PyTorch on Colab, you may encounter memory issues with
 the GPU, where nothing is running, but the RAM is full. The easiest way to 
 clear this is to restart the runtime, which is obviously inconvenient. An
-alternative is to free the memory, by setting the model to None, and then 
-running `torch.cuda.empty_cache()`.
+alternative is to free the memory, by setting the model to None or using
+`del model`, and then running `torch.cuda.empty_cache()`.
