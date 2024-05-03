@@ -76,3 +76,63 @@ the GPU, where nothing is running, but the RAM is full. The easiest way to
 clear this is to restart the runtime, which is obviously inconvenient. An
 alternative is to free the memory, by setting the model to None or using
 `del model`, and then running `torch.cuda.empty_cache()`.
+
+### Overfitting
+Problem: The model performs well on training data but poorly on unseen data.\
+Solution: Implement regularization techniques, dropout, or increase data.
+
+```python
+model = Sequential([
+    Dense(128, activation="relu", input_shape=(input_shape,), kernel_regularizer=l2(0.01)),
+    Dropout(0.5),
+    Dense(num_classes, activation="softmax")
+])
+```
+
+### Vanishing Gradients
+Problem: Weights update becomes very small, effectively stopping the network from learning in deep networks.\
+Solution: Use ReLU or its variants as activation functions, initialize weights carefully.
+
+```python
+model = Sequential([
+    Dense(128, activation="relu", input_shape=(input_shape,)),
+    Dense(num_classes, activation="softmax")
+])
+```
+
+### Learning Rate Issues
+Problem: Too high a learning rate can cause the model to converge too fast to a suboptimal solution, and too low can slow down the learning process.\
+Solution: Use an adaptive learning rate optimizer like Adam.
+
+```python
+model = Sequential([
+    Dense(128, activation="relu", input_shape=(input_shape,)),
+    Dense(num_classes, activation="softmax")
+])
+optimizer = Adam(learning_rate=0.001)
+model.compile(optimizer=optimizer, loss="categorical_crossentropy", metrics=["accuracy"])
+```
+
+### Improper Filter Size
+Problem: Choosing the wrong size of the filters can lead to poor feature extraction.\
+Solution: Experiment with different sizes of filters to find the optimal configuration for specific tasks. Small filters (3x3) are generally preferred for capturing fine details.
+
+```python
+Conv2D(64, (3, 3), activation="relu")
+```
+
+### Insufficient Training Data
+Problem: Not having enough data to train a robust model.\
+Solution: Data Augmentation could increase the diversity of data available for training models.
+
+```python
+datagen = ImageDataGenerator(
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
+```
