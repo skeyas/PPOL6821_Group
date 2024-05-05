@@ -158,9 +158,9 @@ Generally images sizes in the power of 2 with a patch embedding size of (2,2) wo
 #### (b) Embedding Dimension and Number of Heads
 The embedding dimension should be divisible by the number of heads in the multi-head attention mechanism. This is important for the model to evenly distribute the embedding vector across different heads. A mismatch here can lead to runtime errors or inefficient computation. Adjust the embedding dimension to be a multiple of the number of attention heads. For instance, with 8 heads, good embedding dimensions could be 64, 128, 256, etc. 
 
-## Hitches of Migrating Keras 2 to Keras 3
+### Hitches of Migrating Keras 2 to Keras 3
 
-### Deprecated backend module and the new Ops API 
+#### Deprecated backend module and the new Ops API 
 `keras.backend` in Keras 2 serves as an abstraction layer, allowing develpers to write code that can raun on multiple deep learning frameworks. In practice, it is used to conduct basic math operations, tensor manipulations, linear algebra operations, etc. 
 
 Here are some examples:
@@ -203,7 +203,7 @@ keras.ops.log() # and other variants such as log10(), log1p(), log2(). or
 tf.math.log()
 ```
 
-### F1Score
+#### F1Score
 There is no F1Score class in Keras 2. One way to calculate F1 score is to use the following code:
 ```python
 # Define metrics: precision, recall, F1_score
@@ -247,4 +247,4 @@ metric.update_state(y_true, y_pred)
 result = metric.result()
 print(result.numpy())  ## [0.49999997 0.8571428  0.66666657]
 ```    
-Please note that `threshold` must be explicitly set when creating the F1Score object. Using `F1Score()` will yield wrong results. The threshold is used to convert the predicted probabilities to binary values. The default value is 0.5.
+Please note that `threshold` must be explicitly set when creating the F1Score object. Using `F1Score()` without setting threshold will yield wrong results. The threshold is used to convert the predicted probabilities to binary values, and the default value is 0.5.
