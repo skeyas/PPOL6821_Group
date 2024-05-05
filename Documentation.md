@@ -248,3 +248,12 @@ result = metric.result()
 print(result.numpy())  ## [0.49999997 0.8571428  0.66666657]
 ```    
 Please note that `threshold` must be explicitly set when creating the F1Score object. Using `F1Score()` without setting threshold will yield wrong results. The threshold is used to convert the predicted probabilities to binary values, and the default value is 0.5.
+
+
+### NaN Loss
+Painstakingly cleaning your data and designing your neural nets only to encounter NaN loss in each epoch can be frustrating and confusing. Though NaN loss can be caused by inappropriate architectures, the cause is usually on the data side in my experience. One cause of NaN loss is the presence of missings in the data. To fix the problem, simply:
+```python
+import pandas as pd
+df.dropna(inplace = True)
+```
+Once I dropped NAs, my neural nets ran as expected.
