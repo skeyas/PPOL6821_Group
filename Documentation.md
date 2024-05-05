@@ -135,7 +135,7 @@ datagen = ImageDataGenerator(
     horizontal_flip=True,
     fill_mode='nearest'
 )
-
+```
 ### Images sizes in CNNs
 With Convolutional Neural Networks, we need to pay attention to the compatibility between the input data shape and the configuration of the input layer of the network, essentially ensuring that the size of the input data matches the expected input size of the network.
 
