@@ -104,7 +104,7 @@ model = Sequential([
 Problem: Too high a learning rate can cause the model to converge too fast to a suboptimal solution, and too low can slow down the learning process.\
 Solution: Use an adaptive learning rate optimizer like Adam.
 
-```python
+```
 model = Sequential([
     Dense(128, activation="relu", input_shape=(input_shape,)),
     Dense(num_classes, activation="softmax")
