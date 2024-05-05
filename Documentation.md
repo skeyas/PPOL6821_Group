@@ -158,3 +158,93 @@ Generally images sizes in the power of 2 with a patch embedding size of (2,2) wo
 #### (b) Embedding Dimension and Number of Heads
 The embedding dimension should be divisible by the number of heads in the multi-head attention mechanism. This is important for the model to evenly distribute the embedding vector across different heads. A mismatch here can lead to runtime errors or inefficient computation. Adjust the embedding dimension to be a multiple of the number of attention heads. For instance, with 8 heads, good embedding dimensions could be 64, 128, 256, etc. 
 
+## Hitches of Migrating Keras 2 to Keras 3
+
+### Deprecated backend module and the new Ops API 
+`keras.backend` in Keras 2 serves as an abstraction layer, allowing develpers to write code that can raun on multiple deep learning frameworks. In practice, it is used to conduct basic math operations, tensor manipulations, linear algebra operations, etc. 
+
+Here are some examples:
+```python
+import keras.backend as K
+
+K.sum() # sum of all elements in a tensor
+K.mean() # mean of all elements in a tensor
+K.clip() # clip tensor values to a specified range
+K.round() # round tensor values to the nearest integer
+K.dot() # dot product of two tensors
+K.log() # natural logarithm of tensor values
+k.epsilon() # a small constant value to avoid division by zero
+```
+`keras.backend` is deprecated in Keras 3, and the more powerful [Ops API](https://keras.io/api/ops/) is introduced. The Keras 3 Ops API provides a comprehensive set of operations and functions that extend the capabilities of what can be achieved within the Keras framework. Categories of operations in Keras 3 Ops API include: NumPy Ops, NN Ops, Linear Algebra Ops, Core Ops, Image Ops, and FFT Opes. 
+
+For some other operations, the deprecated `keras.backend` functions can be replaced with tf.math functions.
+
+Using the same examples as above:
+
+```python
+import tensorflow as tf
+import keras
+
+# K.sum() is replaced with
+tf.math.reduce_sum()
+# K.mean() is replaced with
+tf.math.reduce_mean()
+# K.clip() is replaced with
+keras.ops.clip() # or
+tf.clip_by_value()
+# K.round() is replaced with
+keras.ops.round() # or
+tf.round()
+# K.dot() is replaced with
+keras.ops.dot() # or
+tf.tensordot()
+# K.log() is replaced with
+keras.ops.log() # and other variants such as log10(), log1p(), log2(). or
+tf.math.log()
+```
+
+### F1Score
+There is no F1Score class in Keras 2. One way to calculate F1 score is to use the following code:
+```python
+# Define metrics: precision, recall, F1_score
+import Keras
+from keras import backend as K
+
+def precision(y_true, y_pred):
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+    precision = true_positives / (predicted_positives + K.epsilon())
+    return precision
+
+def recall(y_true, y_pred):
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+    recall = true_positives / (possible_positives + K.epsilon())
+    return recall
+
+def f1(y_true, y_pred):
+    p = precision(y_true, y_pred)
+    r = recall(y_true, y_pred)
+    return 2*((p*r)/(p+r+K.epsilon()))
+```
+The deprecation of `keras.backend` in Keras 3 means that the above code will not work. The good news is that the [F1Score class](https://keras.io/api/metrics/classification_metrics/#f1score-class) is introduced in Keras 3, which can be used to calculate the F1 score. Here is an example of how to use the F1Score class:
+
+```python
+from keras.metrics import F1Score
+
+metric = F1Score(threshold=0.5)
+y_true = np.array([[1,1,1],
+                   [1,0,0],
+                   [1,1,0],
+                   [0,1,0]],
+                   np.int32)
+y_pred = np.array([[0.0,0.6,0.7],
+                   [0.2,0.6,0.6],
+                   [0.9,0.8,0.1],
+                   [0.2,0.8,0.1]],
+                   np.float32)
+metric.update_state(y_true, y_pred)
+result = metric.result()
+print(result.numpy())  ## [0.49999997 0.8571428  0.66666657]
+```    
+Please note that `threshold` must be explicitly set when creating the F1Score object. Using `F1Score()` will yield wrong results. The threshold is used to convert the predicted probabilities to binary values. The default value is 0.5.
