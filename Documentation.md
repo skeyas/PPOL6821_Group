@@ -135,4 +135,26 @@ datagen = ImageDataGenerator(
     horizontal_flip=True,
     fill_mode='nearest'
 )
+
+### Images sizes in CNNs
+With Convolutional Neural Networks, we need to pay attention to the compatibility between the input data shape and the configuration of the input layer of the network, essentially ensuring that the size of the input data matches the expected input size of the network.
+
+If you attempt to train or evaluate a model using images of a different size than the one it expects, Keras won't raise an error during model compilation. However, during training or inference, the images will be read and processed according to the specified input shape. If the actual input images are larger than the expected size, it will automatically crop or resize them to fit. Conversely, if the input images are smaller, the model will only read a portion of the images commensurate with the shape it expects, leading to unexpected results and.or unstable training. 
+
+A quick way to validate it:
+```python
+
+# assuming cnn has been compiled prior and is called is called model
+sample_batch = next(iter(train_dataset))
+if sample_batch[0].shape[1:] != model.input_shape[1:]:
+    raise ValueError(f"Input data dimensions are {sample_batch[0].shape[1:]}, but the model expects {model.input_shape[1:}.")
 ```
+### Dimensionality issues in [Transformers for images](https://keras.io/examples/vision/swin_transformers/) 
+#### (a) Image Dimension and Patch Size Compatibility
+One common issue arises when the image dimensions are not divisible by the patch size. This is important to keep in mind because the architecture processes images by dividing them into patches, multiple times and if the dimensions of the image are not perfectly divisible by the patch dimensions, this will lead to errors or the need for padding, which can affect performance and results.  
+  
+Generally images sizes in the power of 2 with a patch embedding size of (2,2) works well especially because later in the patch merging operation, four distinct slices are extracted, reshaped and concated. Each extraction step relies on being able to access patches in a grid that is evenly divisible. If the dimensions are not divisible by 2, some patches at the edges might not have corresponding neighbors to form a complete group of four, leading to issues in merging.
+
+#### (b) Embedding Dimension and Number of Heads
+The embedding dimension should be divisible by the number of heads in the multi-head attention mechanism. This is important for the model to evenly distribute the embedding vector across different heads. A mismatch here can lead to runtime errors or inefficient computation. Adjust the embedding dimension to be a multiple of the number of attention heads. For instance, with 8 heads, good embedding dimensions could be 64, 128, 256, etc. 
+
