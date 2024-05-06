@@ -89,6 +89,50 @@ model = Sequential([
 ])
 ```
 
+### Keras Callbacks
+Keras has this useful functionality called "callbacks" that allows users to customize the behavior of a Keras model during stages of your model's training, evaluation and inference process. You could use callbacks to do the following tasks: 
+* Periodically save your model to disk
+* Get a view of various metrics or statistics during training
+* Visualize progress of your training process
+* Many more.
+There are many forms of callbacks, and you can always define your own callback function to solve the issues at hand.
+One commonly used callbacks is the `ModelCheckpoint` class which enables users to save Keras model or model weights are some determined frequency.
+
+```python
+filepath = '/tmp/ckpt/checkpoint.model.h5'
+keras.callbacks.ModelCheckpoint(
+    filepath,
+    monitor="val_loss",
+    verbose=0,
+    save_best_only=False,
+    save_weights_only=False,
+    mode="auto",
+    save_freq="epoch",
+    initial_value_threshold=None,
+)
+```
+
+One very useful callback function is the `BackupAndRestore` class, which saves you a lot of headache by helping you recover training from any interruption that might happen during the training process.
+
+```python
+callback = keras.callbacks.BackupAndRestore(backup_dir="/tmp/backup")
+model = keras.models.Sequential([keras.layers.Dense(10)])
+model.compile(keras.optimizers.SGD(), loss='mse')
+try:
+    model.fit(np.arange(100).reshape(5, 20), np.zeros(5), epochs=10,
+              batch_size=1, callbacks=[callback, InterruptingCallback()],
+              verbose=0)
+except:
+    pass
+history = model.fit(
+    np.arange(100).reshape(5, 20), np.zeros(5),
+    epochs=10, batch_size=1, callbacks=[callback],
+    verbose=0
+)
+```
+
+For more information on other useful Keras callback functions, see: [https://keras.io/api/callbacks/](https://keras.io/api/callbacks/)
+
 ### Vanishing Gradients
 Problem: Weights update becomes very small, effectively stopping the network from learning in deep networks.\
 Solution: Use ReLU or its variants as activation functions, initialize weights carefully.
