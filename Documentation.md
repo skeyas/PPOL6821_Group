@@ -1,5 +1,5 @@
 ---
-editor_options: 
+
 ---
 
 # Lessons Learned
@@ -295,7 +295,7 @@ Once I dropped NAs, my neural nets ran as expected.
 
 ### Tensorflow addons alternatives
 
-Tensorflow addons have been deprecated and is on minimal maintenance (end of life) till May 2024. Continued usage of any of these functions may cause issues. There is a compilation of available alternate functions maintained at <https://docs.google.com/spreadsheets/d/1YMPudb7Otqx_TQu_oTHMm5IRZolyPcah8-qkMs_wI-I/edit#gid=0> . \
+Tensorflow addons have been deprecated and is on minimal maintenance (end of life) till May 2024. Continued usage of any of these functions may cause issues. There is a compilation of available alternate functions maintained at <https://docs.google.com/spreadsheets/d/1YMPudb7Otqx_TQu_oTHMm5IRZolyPcah8-qkMs_wI-I/edit#gid=0> .\
 \
 Tensorflow addons provided a handy `tfa.image.rotate` function to rotate images by an arbitrary value in radians. An alternate to this is to use `tf.image.rot90` function directly provided by tensorflow, though with the restriction of rotating the image in multiples of 90 degrees. Alternatively, random rotation can be achieved by including a layer using `keras.layers.RandomRotation.`
 
