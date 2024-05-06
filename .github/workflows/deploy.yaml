@@ -1,0 +1,12 @@
+name: Deploy
+on: [push]
+jobs:
+	deploy_html:
+		runs-on: ubuntu-latest
+		steps:
+			- run: npm i markdown-to-html-cli
+			- name: Render
+			  uses: jaywcjlove/markdown-to-html-cli@main
+			  with:
+				  source: Documentation.md
+				  output: Documentation.html
