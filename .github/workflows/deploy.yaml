@@ -17,7 +17,10 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: render
-        run: npm install markdown-to-html -g; markdown Documentation.md > Documentation.html; echo $(ls)
+        run: |
+          npm install markdown-to-html -g
+          markdown Documentation.md > Documentation.html
+          echo $(ls)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
