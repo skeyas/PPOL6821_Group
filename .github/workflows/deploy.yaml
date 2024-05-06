@@ -21,10 +21,8 @@ jobs:
           npm install markdown-to-html -g
           markdown Documentation.md > Documentation.html
           echo $(ls)
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './Documentation.html'
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
