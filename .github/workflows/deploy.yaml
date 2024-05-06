@@ -1,12 +1,25 @@
 name: Deploy
 on: [push]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
-	deploy_html:
-		runs-on: ubuntu-latest
-		steps:
-			- run: npm i markdown-to-html-cli
-			- name: Render
-			  uses: jaywcjlove/markdown-to-html-cli@main
-			  with:
-				  source: Documentation.md
-				  output: Documentation.html
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './Documentation.md'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
